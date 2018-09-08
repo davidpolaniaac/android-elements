@@ -1,6 +1,7 @@
 package com.example.dpolania.demo;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +18,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String message = intent.getStringExtra(CreateNoteActivity.EXTRA_MESSAGE);
         ((TextView)findViewById(R.id.textView)).setText(message);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -42,4 +43,6 @@ public class DisplayMessageActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
