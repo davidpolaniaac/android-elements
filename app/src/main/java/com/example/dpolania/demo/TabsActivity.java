@@ -57,7 +57,7 @@ public class TabsActivity extends AppCompatActivity {
             if(requestCode == CREATE_NOTE){
                 String note = data.getStringExtra(CreateNoteActivity.EXTRA_MESSAGE);
                 saveNote(note);
-                ((FirstFragment)mViewPagerAdapter.getItem(0)).showNotes();
+                ((FirstFragment)mViewPagerAdapter.getItem(0)).updateNotes();
             }
         }
 

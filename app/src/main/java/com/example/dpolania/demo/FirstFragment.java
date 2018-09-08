@@ -4,6 +4,8 @@ package com.example.dpolania.demo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,11 @@ import android.widget.TextView;
 public class FirstFragment extends Fragment {
 
     private View view;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private MyAdapter mAdapter;
+    private NotesDbAdapter notesDbAdapter;
+    private Cursor cursor;
 
     public FirstFragment() {
         // Required empty public constructor
@@ -28,28 +35,31 @@ public class FirstFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_first, container, false);
-        showNotes();
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        notesDbAdapter = new NotesDbAdapter(getActivity());
+        notesDbAdapter.open();
+        cursor = notesDbAdapter.fetchAllNotes();
+        mAdapter = new MyAdapter(cursor);
+        mRecyclerView.setAdapter(mAdapter);
+
         return view;
     }
 
-    public void showNotes() {
-
-        LinearLayout notesContainer = view.findViewById(R.id.notesContainer);
-        notesContainer.removeAllViews();
-
-        NotesDbAdapter notesDbAdapter = new NotesDbAdapter(getActivity());
-        notesDbAdapter.open();
-        Cursor cursor = notesDbAdapter.fetchAllNotes();
-        if (cursor.moveToFirst()){
-            do {
-                String note = cursor.getString(cursor.getColumnIndex(NotesDbAdapter.KEY_BODY));
-                TextView textView = new TextView(getActivity());
-                textView.setText(note);
-                notesContainer.addView(textView);
-
-            }while (cursor.moveToNext());
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         notesDbAdapter.close();
     }
 
+    public void updateNotes() {
+
+        cursor = notesDbAdapter.fetchAllNotes();
+        mAdapter.setmDataset(cursor);
+        mAdapter.notifyDataSetChanged();
+
+    }
 }
